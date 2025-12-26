@@ -4,6 +4,7 @@
 		size?: 'sm' | 'md' | 'lg';
 		disabled?: boolean;
 		type?: 'button' | 'submit' | 'reset';
+		href?: string;
 		onclick?: (event: MouseEvent) => void;
 		children?: any;
 		class?: string;
@@ -14,27 +15,37 @@
 		size = 'md',
 		disabled = false,
 		type = 'button',
+		href,
 		onclick,
 		children,
 		class: className = ''
 	}: Props = $props();
+
+	const classes = $derived(
+		`btn ${className} ${variant === 'primary' ? 'btn-primary' : ''} ${variant === 'secondary' ? 'btn-secondary' : ''} ${variant === 'ghost' ? 'btn-ghost' : ''} ${variant === 'destructive' ? 'btn-destructive' : ''} ${size === 'sm' ? 'btn-sm' : ''} ${size === 'md' ? 'btn-md' : ''} ${size === 'lg' ? 'btn-lg' : ''}`
+	);
 </script>
 
-<button
-	{type}
-	{disabled}
-	{onclick}
-	class="btn {className}"
-	class:btn-primary={variant === 'primary'}
-	class:btn-secondary={variant === 'secondary'}
-	class:btn-ghost={variant === 'ghost'}
-	class:btn-destructive={variant === 'destructive'}
-	class:btn-sm={size === 'sm'}
-	class:btn-md={size === 'md'}
-	class:btn-lg={size === 'lg'}
->
-	{@render children?.()}
-</button>
+{#if href}
+	<a
+		{href}
+		class={classes}
+		class:disabled
+		aria-disabled={disabled}
+		onclick={disabled ? (e) => e.preventDefault() : onclick}
+	>
+		{@render children?.()}
+	</a>
+{:else}
+	<button
+		{type}
+		{disabled}
+		{onclick}
+		class={classes}
+	>
+		{@render children?.()}
+	</button>
+{/if}
 
 <style>
 	.btn {
@@ -47,6 +58,7 @@
 		cursor: pointer;
 		border: 1px solid transparent;
 		white-space: nowrap;
+		text-decoration: none;
 	}
 
 	.btn:focus-visible {
@@ -54,9 +66,11 @@
 		outline-offset: 2px;
 	}
 
-	.btn:disabled {
+	.btn:disabled,
+	.btn.disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
+		pointer-events: none;
 	}
 
 	/* Variants */
