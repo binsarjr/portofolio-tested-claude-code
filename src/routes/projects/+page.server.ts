@@ -1,3 +1,4 @@
+import { env } from '$env/dynamic/private';
 import type { PageServerLoad } from './$types';
 
 interface GitHubRepository {
@@ -15,16 +16,19 @@ interface GitHubRepository {
 
 export const load: PageServerLoad = async ({ fetch }) => {
 	try {
+		// Build headers with optional GitHub token for higher rate limits (5000/hour vs 60/hour)
+		const headers: Record<string, string> = {
+			Accept: 'application/vnd.github.v3+json'
+		};
+
+		if (env.GITHUB_TOKEN) {
+			headers.Authorization = `Bearer ${env.GITHUB_TOKEN}`;
+		}
+
 		// Fetch all repositories from GitHub API
 		const response = await fetch(
 			'https://api.github.com/users/binsarjr/repos?sort=updated&per_page=100',
-			{
-				headers: {
-					Accept: 'application/vnd.github.v3+json',
-					// Optional: Add GitHub token for higher rate limits
-					// Authorization: `Bearer ${env.GITHUB_TOKEN}`
-				}
-			}
+			{ headers }
 		);
 
 		if (!response.ok) {
