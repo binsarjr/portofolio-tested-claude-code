@@ -11,7 +11,7 @@
 
 	// Show loading state during navigation
 	const isLoading = $derived($navigating !== null);
-	const hasData = $derived(data.user && data.recentRepos.length > 0);
+	const showError = $derived(!isLoading && data.recentRepos.length === 0);
 </script>
 
 <svelte:head>
@@ -26,7 +26,15 @@
 	<div class="container">
 		<div class="header">
 			<h1>GitHub Activity</h1>
-			<p class="subtitle">Real-time contributions and open source work</p>
+			<p class="subtitle">
+				{#if isLoading}
+					Loading activity data...
+				{:else if showError}
+					Unable to load activity data. Please try again later.
+				{:else}
+					Real-time contributions and open source work
+				{/if}
+			</p>
 		</div>
 
 		<!-- User Stats -->
@@ -35,6 +43,23 @@
 				{#each Array(4) as _, i (i)}
 					<StatCardSkeleton />
 				{/each}
+			{:else if showError}
+				<div class="error-message-stats">
+					<Card>
+						<div class="error-content">
+							<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+								<circle cx="12" cy="12" r="10"></circle>
+								<line x1="12" y1="8" x2="12" y2="12"></line>
+								<line x1="12" y1="16" x2="12.01" y2="16"></line>
+							</svg>
+							<h3>Failed to Load Activity Data</h3>
+							<p>We couldn't fetch GitHub activity data. This might be due to rate limiting or network issues.</p>
+							<button onclick={() => window.location.reload()} class="retry-button">
+								Try Again
+							</button>
+						</div>
+					</Card>
+				</div>
 			{:else}
 				<Card class="stat-card">
 					<div class="stat-icon">📦</div>
@@ -71,94 +96,96 @@
 		</div>
 
 		<!-- Contribution Graph Embed -->
-		<Card class="contribution-card">
-			<h2 class="section-title">Contribution Activity</h2>
-			{#if isLoading}
-				<div class="contribution-embed">
-					<Skeleton height="150px" width="100%" />
-				</div>
-				<div class="chart-note">
-					<Skeleton height="0.875rem" width="300px" class="chart-note-skeleton" />
-				</div>
-			{:else}
-				<div class="contribution-embed">
-					<img
-						src="https://ghchart.rshah.org/3b82f6/binsarjr"
-						alt="GitHub Contribution Chart"
-						class="contribution-chart"
-						loading="lazy"
-					/>
-				</div>
-				<p class="chart-note">
-					Last 12 months of contributions • Data from
-					<a
-						href="https://github.com/binsarjr"
-						target="_blank"
-						rel="noopener noreferrer"
-						data-sveltekit-reload
-					>
-						@binsarjr
-					</a>
-				</p>
-			{/if}
-		</Card>
-
-		<!-- Recent Activity -->
-		<div class="recent-activity">
-			<h2 class="section-title">Recent Repositories</h2>
-			<div class="activity-grid">
+		{#if !showError}
+			<Card class="contribution-card">
+				<h2 class="section-title">Contribution Activity</h2>
 				{#if isLoading}
-					{#each Array(6) as _, i (i)}
-						<ActivityCardSkeleton />
-					{/each}
+					<div class="contribution-embed">
+						<Skeleton height="150px" width="100%" />
+					</div>
+					<div class="chart-note">
+						<Skeleton height="0.875rem" width="300px" class="chart-note-skeleton" />
+					</div>
 				{:else}
-					{#each data.recentRepos.slice(0, 6) as repo (repo.name)}
-						<Card class="activity-item">
-							<div class="activity-header">
-								<h3 class="activity-title">{repo.name}</h3>
-								<Badge variant="secondary" size="sm">
-									Updated {new Date(repo.updated_at).toLocaleDateString()}
-								</Badge>
-							</div>
-
-							<p class="activity-description">{repo.description || 'No description'}</p>
-
-							<div class="activity-stats">
-								<span class="activity-stat">
-									<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-										<path
-											d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"
-										></path>
-									</svg>
-									{repo.stargazers_count}
-								</span>
-								<span class="activity-stat">
-									<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-										<path
-											d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-.878a2.25 2.25 0 111.5 0v.878a2.25 2.25 0 01-2.25 2.25h-1.5v2.128a2.251 2.251 0 11-1.5 0V8.5h-1.5A2.25 2.25 0 013.5 6.25v-.878a2.25 2.25 0 111.5 0zM5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm6.75.75a.75.75 0 100-1.5.75.75 0 000 1.5zm-3 8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"
-										></path>
-									</svg>
-									{repo.forks_count}
-								</span>
-								{#if repo.language}
-									<Badge variant="outline" size="sm">{repo.language}</Badge>
-								{/if}
-							</div>
-
-							<a
-								href={repo.html_url}
-								target="_blank"
-								rel="noopener noreferrer"
-								class="activity-link"
-								data-sveltekit-reload
-							>
-								View Repository →
-							</a>
-						</Card>
-					{/each}
+					<div class="contribution-embed">
+						<img
+							src="https://ghchart.rshah.org/3b82f6/binsarjr"
+							alt="GitHub Contribution Chart"
+							class="contribution-chart"
+							loading="lazy"
+						/>
+					</div>
+					<p class="chart-note">
+						Last 12 months of contributions • Data from
+						<a
+							href="https://github.com/binsarjr"
+							target="_blank"
+							rel="noopener noreferrer"
+							data-sveltekit-reload
+						>
+							@binsarjr
+						</a>
+					</p>
 				{/if}
+			</Card>
+
+			<!-- Recent Activity -->
+			<div class="recent-activity">
+				<h2 class="section-title">Recent Repositories</h2>
+				<div class="activity-grid">
+					{#if isLoading}
+						{#each Array(6) as _, i (i)}
+							<ActivityCardSkeleton />
+						{/each}
+					{:else}
+						{#each data.recentRepos.slice(0, 6) as repo (repo.name)}
+							<Card class="activity-item">
+								<div class="activity-header">
+									<h3 class="activity-title">{repo.name}</h3>
+									<Badge variant="secondary" size="sm">
+										Updated {new Date(repo.updated_at).toLocaleDateString()}
+									</Badge>
+								</div>
+
+								<p class="activity-description">{repo.description || 'No description'}</p>
+
+								<div class="activity-stats">
+									<span class="activity-stat">
+										<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+											<path
+												d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"
+											></path>
+										</svg>
+										{repo.stargazers_count}
+									</span>
+									<span class="activity-stat">
+										<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+											<path
+												d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-.878a2.25 2.25 0 111.5 0v.878a2.25 2.25 0 01-2.25 2.25h-1.5v2.128a2.251 2.251 0 11-1.5 0V8.5h-1.5A2.25 2.25 0 013.5 6.25v-.878a2.25 2.25 0 111.5 0zM5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm6.75.75a.75.75 0 100-1.5.75.75 0 000 1.5zm-3 8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"
+											></path>
+										</svg>
+										{repo.forks_count}
+									</span>
+									{#if repo.language}
+										<Badge variant="outline" size="sm">{repo.language}</Badge>
+									{/if}
+								</div>
+
+								<a
+									href={repo.html_url}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="activity-link"
+									data-sveltekit-reload
+								>
+									View Repository →
+								</a>
+							</Card>
+						{/each}
+					{/if}
+				</div>
 			</div>
-		</div>
+		{/if}
 
 		<!-- View All Link -->
 		<div class="view-all-section">
@@ -392,6 +419,53 @@
 		border-color: var(--color-muted-foreground);
 	}
 
+	.error-message-stats {
+		grid-column: 1 / -1;
+		text-align: center;
+	}
+
+	.error-content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+		padding: 3rem 2rem;
+	}
+
+	.error-content svg {
+		color: var(--color-muted-foreground);
+	}
+
+	.error-content h3 {
+		font-size: 1.5rem;
+		font-weight: 700;
+		margin: 0;
+		color: var(--color-foreground);
+	}
+
+	.error-content p {
+		color: var(--color-muted-foreground);
+		max-width: 500px;
+		margin: 0;
+	}
+
+	.retry-button {
+		padding: 0.75rem 2rem;
+		background-color: var(--color-primary);
+		color: var(--color-primary-foreground);
+		border: none;
+		border-radius: var(--radius-lg);
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.retry-button:hover {
+		background-color: var(--color-accent);
+		transform: translateY(-2px);
+		box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+	}
+
 	@media (max-width: 768px) {
 		.activity-page {
 			padding: 5rem 1rem 3rem;
@@ -415,6 +489,10 @@
 
 		.contribution-embed {
 			overflow-x: scroll;
+		}
+
+		.error-content {
+			padding: 2rem 1rem;
 		}
 	}
 </style>
