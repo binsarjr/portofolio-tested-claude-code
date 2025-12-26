@@ -1,6 +1,13 @@
 <script lang="ts">
 	import Card from '$lib/components/ui/Card.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
+	import type { PageData } from './$types';
+
+	interface Props {
+		data: PageData;
+	}
+
+	let { data }: Props = $props();
 
 	const skillCategories = [
 		{
@@ -45,13 +52,18 @@
 		}
 	];
 
-	// Monkeytype stats (placeholder - can be updated with real API if available)
-	const typingStats = {
-		wpm: 95,
-		accuracy: 97,
-		testsCompleted: 500,
-		highestWpm: 120
-	};
+	// Use real-time stats from API if available, otherwise fallback to static data
+	const typingStats = $derived(
+		data.typingStats || {
+			wpm: 95,
+			accuracy: 97,
+			testsCompleted: 500,
+			highestWpm: 120
+		}
+	);
+
+	// Determine if using real-time or fallback data
+	const isRealTimeData = $derived(!!data.typingStats);
 </script>
 
 <svelte:head>
@@ -92,9 +104,23 @@
 		<Card class="typing-stats-card">
 			<div class="typing-header">
 				<div class="typing-icon">⌨️</div>
-				<div>
+				<div class="typing-title-container">
 					<h2>Typing Performance</h2>
-					<p class="typing-subtitle">Measured on Monkeytype</p>
+					<div class="typing-subtitle-row">
+						<a
+							href="https://monkeytype.com"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="monkeytype-link"
+						>
+							Measured on Monkeytype
+						</a>
+						{#if isRealTimeData}
+							<Badge variant="primary" size="sm">Live Data</Badge>
+						{:else}
+							<Badge variant="outline" size="sm">Static Data</Badge>
+						{/if}
+					</div>
 				</div>
 			</div>
 
@@ -201,14 +227,30 @@
 		font-size: 3rem;
 	}
 
-	.typing-header h2 {
-		font-size: 1.875rem;
-		margin: 0;
+	.typing-title-container {
+		flex: 1;
 	}
 
-	.typing-subtitle {
+	.typing-header h2 {
+		font-size: 1.875rem;
+		margin: 0 0 0.5rem 0;
+	}
+
+	.typing-subtitle-row {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+
+	.monkeytype-link {
 		color: var(--color-muted-foreground);
-		margin: 0.25rem 0 0;
+		text-decoration: none;
+		transition: color 0.2s ease;
+	}
+
+	.monkeytype-link:hover {
+		color: var(--color-primary);
 	}
 
 	.stats-grid {

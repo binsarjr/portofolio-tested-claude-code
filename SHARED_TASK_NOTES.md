@@ -12,24 +12,71 @@
 ✅ **Phase 4 Iteration 4 - Custom 404 Error Page COMPLETE**
 ✅ **Phase 4 Iteration 5 - SEO & Meta Tags Enhancement COMPLETE**
 ✅ **Phase 4 Iteration 6 - CSS Build Warning Fix COMPLETE**
+✅ **Phase 4 Iteration 7 - API Enhancements & OG Image Generation COMPLETE**
 
-## What Was Just Completed - Phase 4 Iteration 6: CSS Build Warning Fix
+## What Was Just Completed - Phase 4 Iteration 7: API Enhancements & OG Image Generation
 
-Fixed CSS import order warning in production builds by reordering `@import` statements in `layout.css`.
+Implemented optional API token support for GitHub and Monkeytype, automated OG image generation, and comprehensive API integration documentation.
 
-### Build Optimization ✅
+### API Token Support ✅
 
-1. **CSS Import Order Fix** (`src/routes/layout.css`)
-   - Moved Google Fonts `@import` before Tailwind CSS import
-   - Follows CSS specification: `@import` must precede all rules except `@charset` and `@layer`
-   - Eliminates build warning about import statement placement
-   - Build now completes cleanly without warnings
+1. **GitHub API Authentication** (Projects & Activity pages)
+   - Implemented optional GitHub token support via environment variables
+   - Uses `$env/dynamic/private` for flexible configuration
+   - Automatically upgrades API rate limit from 60/hr to 5000/hr when token is provided
+   - Graceful fallback to public API when token is missing
+   - Updated server files: `projects/+page.server.ts`, `activity/+page.server.ts`
+
+2. **Monkeytype API Integration** (Skills page)
+   - Added real-time typing statistics integration
+   - Fetches personal bests, profile data, and typing stats
+   - Calculates average WPM, accuracy from recent 60s tests
+   - Shows total completed tests and highest WPM
+   - Falls back to static placeholder data when API key is missing
+   - Visual indicator badge: "Live Data" vs "Static Data"
+   - Clickable Monkeytype link in typing stats card
+   - Server file: `skills/+page.server.ts`
+
+3. **Environment Configuration**
+   - Created `.env.example` with setup instructions
+   - Documents both `GITHUB_TOKEN` and `MONKEYTYPE_APE_KEY`
+   - Includes API key generation links and scope requirements
+   - Both tokens are completely optional - portfolio works without them
+
+### OG Image Generation ✅
+
+1. **Automated SVG to PNG Converter** (`scripts/svg-to-png.js`)
+   - Uses Puppeteer for browser-based SVG rendering
+   - Converts `og-image.svg` to `og-image.png` (1200x630px)
+   - Exact pixel-perfect conversion
+   - Added npm script: `bun run og-image`
+   - Installed Puppeteer as dev dependency
+
+2. **Generated PNG Image** (`static/og-image.png`)
+   - Professional 131KB PNG file
+   - Optimized for social media sharing (Facebook, Twitter, LinkedIn)
+   - Matches portfolio design with gradient background
+   - Displays name, title, motto, and GitHub stats
+
+### Documentation ✅
+
+1. **API Integration README** (`API_INTEGRATION_README.md`)
+   - Comprehensive setup guide for GitHub and Monkeytype APIs
+   - Step-by-step token generation instructions
+   - Rate limit information and troubleshooting
+   - Security best practices
+   - OG image regeneration guide
+
+2. **Updated Package.json**
+   - Added `og-image` script for easy PNG regeneration
+   - Puppeteer added as dev dependency
 
 ### Build Status ✅
-- ✅ Clean production build (no warnings)
+- ✅ Clean production build (no errors, no warnings)
 - ✅ All TypeScript types correct (`bun run check` - 0 errors, 0 warnings)
 - ✅ Client bundle: ~30KB main chunk (gzipped: ~12KB)
 - ✅ Server bundle: ~128KB total
+- ✅ Environment variables properly handled with `$env/dynamic/private`
 
 ## Previous Work - Phase 4 Iteration 5: SEO & Meta Tags Enhancement
 
@@ -433,17 +480,17 @@ static/
 - Testimonials section
 
 ## Known Items to Address
-1. GitHub API uses public rate limit (60/hour) - consider adding auth token
-2. Monkeytype stats are static placeholders - needs real API integration
+1. ~~GitHub API uses public rate limit (60/hour)~~ ✅ COMPLETED - Optional token support added (5000/hr)
+2. ~~Monkeytype stats are static placeholders~~ ✅ COMPLETED - Real API integration with fallback
 3. Contact form still uses simulated submission - needs backend
 4. ~~No loading states for GitHub API data yet~~ ✅ COMPLETED
 5. ~~No error boundaries for failed API calls~~ ✅ COMPLETED (Both Projects and Activity pages)
 6. ~~Missing 404 page~~ ✅ COMPLETED
 7. No analytics tracking yet
 8. ~~No sitemap or robots.txt~~ ✅ COMPLETED (Both implemented)
-9. ~~OG images need to be created~~ ✅ COMPLETED (SVG template ready, needs PNG conversion)
+9. ~~OG images need to be created~~ ✅ COMPLETED - PNG generated with automated script
 10. Project filtering/search not implemented yet
-11. ~~Activity page needs error handling UI (similar to Projects page)~~ ✅ COMPLETED
+11. ~~Activity page needs error handling UI~~ ✅ COMPLETED
 12. Structured data (JSON-LD) not implemented yet
 13. Image optimization (WebP/AVIF) not implemented yet
 14. Lighthouse audit not performed yet
@@ -451,7 +498,13 @@ static/
 ## Technical Notes
 - Dev server: `bun run dev` → http://localhost:5173
 - Type checking: `bun run check` (passes ✅)
+- Build: `bun run build` (clean build, no warnings ✅)
+- OG image generation: `bun run og-image`
 - Using Svelte 5 runes: `$state`, `$props`, `$derived`
 - Server-side data loading via `+page.server.ts`
+- Environment variables: `$env/dynamic/private` for optional API tokens
+- GitHub API: Optional token support (60/hr → 5000/hr)
+- Monkeytype API: Optional Ape Key for real-time typing stats
 - GitHub contribution chart via ghchart.rshah.org
 - Language colors from GitHub's official color scheme
+- See `API_INTEGRATION_README.md` for detailed API setup instructions
