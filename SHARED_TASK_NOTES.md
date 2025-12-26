@@ -13,8 +13,66 @@
 ✅ **Phase 4 Iteration 5 - SEO & Meta Tags Enhancement COMPLETE**
 ✅ **Phase 4 Iteration 6 - CSS Build Warning Fix COMPLETE**
 ✅ **Phase 4 Iteration 7 - Real-time Monkeytype Integration COMPLETE**
+✅ **Phase 4 Iteration 8 - GitHub API Rate Limit Enhancement COMPLETE**
 
-## What Was Just Completed - Phase 4 Iteration 7: Real-time Monkeytype Integration
+## What Was Just Completed - Phase 4 Iteration 8: GitHub API Rate Limit Enhancement
+
+Enhanced GitHub API integration with optional authentication token support to increase rate limits from 60 requests/hour (unauthenticated) to 5000 requests/hour (authenticated). This prevents rate limit errors during normal portfolio usage and production deployments.
+
+### GitHub Token Authentication ✅
+
+1. **Projects Page Enhancement** (`src/routes/projects/+page.server.ts`)
+   - Added `$env/dynamic/private` import for secure environment variable access
+   - Conditional token usage: Checks for `GITHUB_TOKEN` environment variable
+   - Builds authorization header only when token is available
+   - Maintains backward compatibility: Works without token (60/hour limit)
+   - Security: Token never exposed to client-side code
+
+2. **Activity Page Enhancement** (`src/routes/activity/+page.server.ts`)
+   - Same authentication pattern as Projects page
+   - Applies token to both user data and repositories API calls
+   - Consistent header building approach
+   - Graceful degradation without token
+
+3. **Enhanced Environment Configuration** (`.env.example`)
+   - Comprehensive documentation sections with clear headers
+   - Detailed rate limit comparison (60/hour vs 5000/hour)
+   - Step-by-step token generation instructions
+   - Security notes emphasizing minimal permissions needed
+   - Scope guidance: Only `public_repo` required
+   - Warning against committing tokens to version control
+
+4. **Comprehensive Setup Documentation** (`GITHUB_TOKEN_SETUP.md`)
+   - **Why section**: Explains the need and benefits
+   - **Rate limit table**: Visual comparison of limits
+   - **Step-by-step guide**: Token generation with screenshots-style instructions
+   - **Scope security**: Detailed permissions explanation
+   - **Platform-specific setup**: Vercel, Netlify, Cloudflare Pages instructions
+   - **Troubleshooting section**: Common errors and solutions
+   - **Security best practices**: Do's and don'ts
+   - **Token lifecycle management**: Rotation guidelines
+   - **Monitoring**: How to check rate limit usage via API
+   - **FAQ section**: Answers to common questions
+   - **Emergency procedures**: What to do if token is exposed
+
+### Technical Implementation ✅
+
+- **Authentication Method**: Bearer token in Authorization header
+- **Environment Variable**: `GITHUB_TOKEN` (optional)
+- **Rate Limits**: 60/hour → 5000/hour (83x improvement)
+- **Security**: Server-side only, never exposed to client
+- **Backward Compatible**: Works without token (development use)
+- **Production Ready**: Designed for deployment with tokens
+- **Minimal Permissions**: Only `public_repo` scope needed
+
+### Build Status ✅
+- ✅ Clean production build (0 warnings, 0 errors)
+- ✅ All TypeScript types correct (`bun run check` - 0 errors, 0 warnings)
+- ✅ Projects page server bundle: 0.93 KB
+- ✅ Activity page server bundle: 1.46 KB
+- ✅ No bundle size increase (efficient implementation)
+
+## Previous Work - Phase 4 Iteration 7: Real-time Monkeytype Integration
 
 Implemented live Monkeytype API integration to fetch and display real-time typing statistics on the Skills page, replacing static placeholder data with actual user performance metrics.
 
@@ -446,8 +504,9 @@ static/
 └── README-og-image.md (✅ new - Phase 4.5)
 
 root/
-├── .env.example (✅ new - Phase 4.7)
-└── MONKEYTYPE_SETUP.md (✅ new - Phase 4.7)
+├── .env.example (✅ enhanced - Phase 4.8)
+├── MONKEYTYPE_SETUP.md (✅ Phase 4.7)
+└── GITHUB_TOKEN_SETUP.md (✅ new - Phase 4.8)
 ```
 
 ## Validation Status
@@ -502,7 +561,7 @@ root/
 - Testimonials section
 
 ## Known Items to Address
-1. GitHub API uses public rate limit (60/hour) - consider adding auth token
+1. ~~GitHub API uses public rate limit (60/hour) - consider adding auth token~~ ✅ COMPLETED
 2. ~~Monkeytype stats are static placeholders - needs real API integration~~ ✅ COMPLETED
 3. Contact form still uses simulated submission - needs backend
 4. ~~No loading states for GitHub API data yet~~ ✅ COMPLETED
