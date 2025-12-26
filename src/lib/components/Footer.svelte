@@ -9,12 +9,12 @@
 		},
 		{
 			name: 'LinkedIn',
-			href: '#',
+			href: 'https://linkedin.com/in/binsar-dwi-jasuma',
 			icon: 'linkedin'
 		},
 		{
 			name: 'Email',
-			href: 'mailto:contact@example.com',
+			href: 'mailto:binsarjr@gmail.com',
 			icon: 'mail'
 		}
 	];
