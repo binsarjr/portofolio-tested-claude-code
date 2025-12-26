@@ -1,3 +1,8 @@
-# allow crawling everything by default
+# robots.txt for Binsar Dwi Jasuma Portfolio
+# Allow all search engines to crawl the entire site
+
 User-agent: *
-Disallow:
+Allow: /
+
+# Sitemap location
+Sitemap: https://binsarjr.com/sitemap.xml

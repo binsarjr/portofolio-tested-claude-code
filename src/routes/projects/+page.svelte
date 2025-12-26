@@ -19,6 +19,23 @@
 		name="description"
 		content="Explore all projects by Binsar Dwi Jasuma - open source contributions, libraries, and tools."
 	/>
+
+	<!-- Open Graph / Facebook -->
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://binsarjr.com/projects" />
+	<meta property="og:title" content="Projects - Binsar Dwi Jasuma" />
+	<meta property="og:description" content="Explore all projects by Binsar Dwi Jasuma - open source contributions, libraries, and tools." />
+	<meta property="og:image" content="https://binsarjr.com/og-image.png" />
+
+	<!-- Twitter -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:url" content="https://binsarjr.com/projects" />
+	<meta name="twitter:title" content="Projects - Binsar Dwi Jasuma" />
+	<meta name="twitter:description" content="Explore all projects by Binsar Dwi Jasuma - open source contributions, libraries, and tools." />
+	<meta name="twitter:image" content="https://binsarjr.com/og-image.png" />
+
+	<!-- Canonical URL -->
+	<link rel="canonical" href="https://binsarjr.com/projects" />
 </svelte:head>
 
 <section class="projects-page">

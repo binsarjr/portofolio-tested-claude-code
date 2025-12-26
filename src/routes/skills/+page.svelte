@@ -60,6 +60,23 @@
 		name="description"
 		content="Technical skills and expertise of Binsar Dwi Jasuma - programming languages, frameworks, and tools."
 	/>
+
+	<!-- Open Graph / Facebook -->
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://binsarjr.com/skills" />
+	<meta property="og:title" content="Skills - Binsar Dwi Jasuma" />
+	<meta property="og:description" content="Technical skills and expertise - TypeScript, Svelte, Python, web scraping, and more. KNTL - Keep Never Tired Learning." />
+	<meta property="og:image" content="https://binsarjr.com/og-image.png" />
+
+	<!-- Twitter -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:url" content="https://binsarjr.com/skills" />
+	<meta name="twitter:title" content="Skills - Binsar Dwi Jasuma" />
+	<meta name="twitter:description" content="Technical skills and expertise - TypeScript, Svelte, Python, web scraping, and more. KNTL - Keep Never Tired Learning." />
+	<meta name="twitter:image" content="https://binsarjr.com/og-image.png" />
+
+	<!-- Canonical URL -->
+	<link rel="canonical" href="https://binsarjr.com/skills" />
 </svelte:head>
 
 <section class="skills-page">
