@@ -20,6 +20,23 @@
 		name="description"
 		content="GitHub activity and contributions by Binsar Dwi Jasuma - real-time open source work."
 	/>
+
+	<!-- Open Graph / Facebook -->
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://binsarjr.com/activity" />
+	<meta property="og:title" content="Activity - Binsar Dwi Jasuma" />
+	<meta property="og:description" content="Real-time GitHub contributions and open source activity. Track my coding journey and recent projects." />
+	<meta property="og:image" content="https://binsarjr.com/og-image.png" />
+
+	<!-- Twitter -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:url" content="https://binsarjr.com/activity" />
+	<meta name="twitter:title" content="Activity - Binsar Dwi Jasuma" />
+	<meta name="twitter:description" content="Real-time GitHub contributions and open source activity. Track my coding journey and recent projects." />
+	<meta name="twitter:image" content="https://binsarjr.com/og-image.png" />
+
+	<!-- Canonical URL -->
+	<link rel="canonical" href="https://binsarjr.com/activity" />
 </svelte:head>
 
 <section class="activity-page">
