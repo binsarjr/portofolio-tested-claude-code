@@ -17,6 +17,21 @@
 	function closeMobileMenu() {
 		mobileMenuOpen = false;
 	}
+
+	function handleNavClick(e: MouseEvent) {
+		const target = e.currentTarget as HTMLAnchorElement;
+		const href = target.getAttribute('href');
+
+		// Close menu for any navigation, including anchor links
+		if (href?.startsWith('/#') || href === '/') {
+			// Small delay to ensure smooth closing
+			setTimeout(() => {
+				mobileMenuOpen = false;
+			}, 100);
+		} else {
+			mobileMenuOpen = false;
+		}
+	}
 </script>
 
 <nav class="nav">
@@ -66,7 +81,7 @@
 					href={item.href}
 					class="mobile-menu-link"
 					class:active={$page.url.pathname === item.href}
-					onclick={closeMobileMenu}
+					onclick={handleNavClick}
 				>
 					{item.label}
 				</a>

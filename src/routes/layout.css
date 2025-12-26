@@ -46,6 +46,7 @@
 
 html {
 	scroll-behavior: smooth;
+	scroll-padding-top: 5rem; /* Account for sticky navigation bar (80px) */
 }
 
 body {
@@ -82,4 +83,16 @@ a {
 
 a:hover {
 	color: var(--color-accent);
+}
+
+/* Accessibility - Focus Styles */
+*:focus-visible {
+	outline: 2px solid var(--color-primary);
+	outline-offset: 2px;
+	border-radius: var(--radius-sm);
+}
+
+/* Remove default focus styles when using focus-visible */
+*:focus:not(:focus-visible) {
+	outline: none;
 }

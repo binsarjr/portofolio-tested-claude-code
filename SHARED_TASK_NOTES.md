@@ -5,8 +5,39 @@
 ✅ **Phase 1 - Design System Foundation COMPLETE**
 ✅ **Phase 2 - Content Sections COMPLETE**
 ✅ **Phase 3 Iteration 1 - UX Polish & Accessibility COMPLETE**
+✅ **Phase 3 Iteration 2 - Navigation & Accessibility Polish COMPLETE**
 
-## What Was Just Completed - Phase 3 Iteration 1: UX & Accessibility
+## What Was Just Completed - Phase 3 Iteration 2: Navigation & Accessibility
+
+Improved navigation behavior and keyboard accessibility:
+
+### Navigation & Accessibility Fixes ✅
+
+1. **Mobile Menu Auto-Close** - Enhanced `Navigation.svelte:21-34`
+   - Added `handleNavClick()` function to properly close mobile menu on anchor link clicks
+   - Includes 100ms delay to ensure smooth closing animation
+   - Works for both same-page anchors (/#about) and regular navigation
+   - Fixes issue where mobile menu stayed open after clicking navigation links
+
+2. **Scroll Offset for Sticky Nav** - Updated `layout.css:49`
+   - Added `scroll-padding-top: 5rem` to HTML element
+   - Prevents content from hiding behind sticky navigation bar when using anchor links
+   - Applies globally to all sections without modifying individual components
+   - Ensures proper spacing when jumping to #about, #projects, #contact
+
+3. **Keyboard Focus Styles** - Added to `layout.css:88-98`
+   - Implemented `:focus-visible` pseudo-class for better keyboard navigation UX
+   - Shows 2px blue outline with 2px offset only for keyboard users (not mouse clicks)
+   - Applies to all interactive elements (links, buttons, inputs)
+   - Improves accessibility for keyboard-only users
+
+### Accessibility Validation ✅
+- Heading hierarchy verified: H1 (Hero) → H2 (Sections) → H3 (Subsections) ✅
+- All interactive elements now have visible focus indicators
+- Skip-to-content link already implemented in Iteration 1
+- External links properly use `target="_blank"` and `rel="noopener noreferrer"`
+
+## What Was Completed - Phase 3 Iteration 1: UX & Accessibility
 
 Improved user experience and accessibility:
 
@@ -117,13 +148,14 @@ Potential improvements to consider:
 - Consider code splitting for larger components
 - Optimize font loading strategy
 
-### 5. Accessibility Improvements (Partially Complete)
+### 5. Accessibility Improvements (Mostly Complete)
 - ✅ Skip-to-content link added
 - ✅ Smooth scrolling implemented
-- Ensure proper heading hierarchy (review all sections)
+- ✅ Heading hierarchy verified (H1 → H2 → H3)
+- ✅ Focus-visible styles for keyboard navigation
+- ✅ Scroll offset for sticky navigation
 - Add more ARIA labels where needed (forms, buttons)
 - Test with screen readers
-- Add focus visible styles for keyboard navigation
 - Ensure color contrast meets WCAG AA standards
 
 ### 6. Additional Features
@@ -170,9 +202,11 @@ src/
 ## Known Items to Address
 1. Contact form currently uses simulated submission - needs real backend (SvelteKit action or Formspree)
 2. Project data is static - consider GitHub API integration for live stats
-3. ✅ ~~Footer LinkedIn link~~ - Fixed
-4. ✅ ~~Footer email address~~ - Fixed
-5. No analytics or tracking implemented yet
-6. Missing 404 and error pages
-7. No scroll-triggered animations yet (hero fade-in only)
-8. Mobile menu doesn't close on navigation click for anchor links
+3. ✅ ~~Footer LinkedIn link~~ - Fixed in Iteration 1
+4. ✅ ~~Footer email address~~ - Fixed in Iteration 1
+5. ✅ ~~Mobile menu doesn't close on anchor navigation~~ - Fixed in Iteration 2
+6. ✅ ~~Scroll offset for sticky nav~~ - Fixed in Iteration 2
+7. ✅ ~~Keyboard focus styles~~ - Fixed in Iteration 2
+8. No analytics or tracking implemented yet
+9. Missing 404 and error pages
+10. No scroll-triggered animations yet (hero fade-in only)
