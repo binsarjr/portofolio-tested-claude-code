@@ -2,8 +2,16 @@
 	import type { PageData } from './$types';
 	import Card from '$lib/components/ui/Card.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
+	import StatCardSkeleton from '$lib/components/skeletons/StatCardSkeleton.svelte';
+	import ActivityCardSkeleton from '$lib/components/skeletons/ActivityCardSkeleton.svelte';
+	import Skeleton from '$lib/components/ui/Skeleton.svelte';
+	import { navigating } from '$app/stores';
 
 	let { data }: { data: PageData } = $props();
+
+	// Show loading state during navigation
+	const isLoading = $derived($navigating !== null);
+	const hasData = $derived(data.user && data.recentRepos.length > 0);
 </script>
 
 <svelte:head>
@@ -23,111 +31,132 @@
 
 		<!-- User Stats -->
 		<div class="stats-overview">
-			<Card class="stat-card">
-				<div class="stat-icon">📦</div>
-				<div class="stat-content">
-					<div class="stat-value">{data.user.public_repos}</div>
-					<div class="stat-label">Public Repositories</div>
-				</div>
-			</Card>
+			{#if isLoading}
+				{#each Array(4) as _, i (i)}
+					<StatCardSkeleton />
+				{/each}
+			{:else}
+				<Card class="stat-card">
+					<div class="stat-icon">📦</div>
+					<div class="stat-content">
+						<div class="stat-value">{data.user.public_repos}</div>
+						<div class="stat-label">Public Repositories</div>
+					</div>
+				</Card>
 
-			<Card class="stat-card">
-				<div class="stat-icon">👥</div>
-				<div class="stat-content">
-					<div class="stat-value">{data.user.followers}</div>
-					<div class="stat-label">Followers</div>
-				</div>
-			</Card>
+				<Card class="stat-card">
+					<div class="stat-icon">👥</div>
+					<div class="stat-content">
+						<div class="stat-value">{data.user.followers}</div>
+						<div class="stat-label">Followers</div>
+					</div>
+				</Card>
 
-			<Card class="stat-card">
-				<div class="stat-icon">👤</div>
-				<div class="stat-content">
-					<div class="stat-value">{data.user.following}</div>
-					<div class="stat-label">Following</div>
-				</div>
-			</Card>
+				<Card class="stat-card">
+					<div class="stat-icon">👤</div>
+					<div class="stat-content">
+						<div class="stat-value">{data.user.following}</div>
+						<div class="stat-label">Following</div>
+					</div>
+				</Card>
 
-			<Card class="stat-card">
-				<div class="stat-icon">⭐</div>
-				<div class="stat-content">
-					<div class="stat-value">{data.totalStars}</div>
-					<div class="stat-label">Total Stars</div>
-				</div>
-			</Card>
+				<Card class="stat-card">
+					<div class="stat-icon">⭐</div>
+					<div class="stat-content">
+						<div class="stat-value">{data.totalStars}</div>
+						<div class="stat-label">Total Stars</div>
+					</div>
+				</Card>
+			{/if}
 		</div>
 
 		<!-- Contribution Graph Embed -->
 		<Card class="contribution-card">
 			<h2 class="section-title">Contribution Activity</h2>
-			<div class="contribution-embed">
-				<img
-					src="https://ghchart.rshah.org/3b82f6/binsarjr"
-					alt="GitHub Contribution Chart"
-					class="contribution-chart"
-					loading="lazy"
-				/>
-			</div>
-			<p class="chart-note">
-				Last 12 months of contributions • Data from
-				<a
-					href="https://github.com/binsarjr"
-					target="_blank"
-					rel="noopener noreferrer"
-					data-sveltekit-reload
-				>
-					@binsarjr
-				</a>
-			</p>
+			{#if isLoading}
+				<div class="contribution-embed">
+					<Skeleton height="150px" width="100%" />
+				</div>
+				<div class="chart-note">
+					<Skeleton height="0.875rem" width="300px" class="chart-note-skeleton" />
+				</div>
+			{:else}
+				<div class="contribution-embed">
+					<img
+						src="https://ghchart.rshah.org/3b82f6/binsarjr"
+						alt="GitHub Contribution Chart"
+						class="contribution-chart"
+						loading="lazy"
+					/>
+				</div>
+				<p class="chart-note">
+					Last 12 months of contributions • Data from
+					<a
+						href="https://github.com/binsarjr"
+						target="_blank"
+						rel="noopener noreferrer"
+						data-sveltekit-reload
+					>
+						@binsarjr
+					</a>
+				</p>
+			{/if}
 		</Card>
 
 		<!-- Recent Activity -->
 		<div class="recent-activity">
 			<h2 class="section-title">Recent Repositories</h2>
 			<div class="activity-grid">
-				{#each data.recentRepos.slice(0, 6) as repo (repo.name)}
-					<Card class="activity-item">
-						<div class="activity-header">
-							<h3 class="activity-title">{repo.name}</h3>
-							<Badge variant="secondary" size="sm">
-								Updated {new Date(repo.updated_at).toLocaleDateString()}
-							</Badge>
-						</div>
+				{#if isLoading}
+					{#each Array(6) as _, i (i)}
+						<ActivityCardSkeleton />
+					{/each}
+				{:else}
+					{#each data.recentRepos.slice(0, 6) as repo (repo.name)}
+						<Card class="activity-item">
+							<div class="activity-header">
+								<h3 class="activity-title">{repo.name}</h3>
+								<Badge variant="secondary" size="sm">
+									Updated {new Date(repo.updated_at).toLocaleDateString()}
+								</Badge>
+							</div>
 
-						<p class="activity-description">{repo.description || 'No description'}</p>
+							<p class="activity-description">{repo.description || 'No description'}</p>
 
-						<div class="activity-stats">
-							<span class="activity-stat">
-								<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-									<path
-										d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"
-									></path>
-								</svg>
-								{repo.stargazers_count}
-							</span>
-							<span class="activity-stat">
-								<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-									<path
-										d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-.878a2.25 2.25 0 111.5 0v.878a2.25 2.25 0 01-2.25 2.25h-1.5v2.128a2.251 2.251 0 11-1.5 0V8.5h-1.5A2.25 2.25 0 013.5 6.25v-.878a2.25 2.25 0 111.5 0zM5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm6.75.75a.75.75 0 100-1.5.75.75 0 000 1.5zm-3 8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"
-									></path>
-								</svg>
-								{repo.forks_count}
-							</span>
-							{#if repo.language}
-								<Badge variant="outline" size="sm">{repo.language}</Badge>
-							{/if}
-						</div>
+							<div class="activity-stats">
+								<span class="activity-stat">
+									<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+										<path
+											d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"
+										></path>
+									</svg>
+									{repo.stargazers_count}
+								</span>
+								<span class="activity-stat">
+									<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+										<path
+											d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-.878a2.25 2.25 0 111.5 0v.878a2.25 2.25 0 01-2.25 2.25h-1.5v2.128a2.251 2.251 0 11-1.5 0V8.5h-1.5A2.25 2.25 0 013.5 6.25v-.878a2.25 2.25 0 111.5 0zM5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm6.75.75a.75.75 0 100-1.5.75.75 0 000 1.5zm-3 8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"
+										></path>
+									</svg>
+									{repo.forks_count}
+								</span>
+								{#if repo.language}
+									<Badge variant="outline" size="sm">{repo.language}</Badge>
+								{/if}
+							</div>
 
-						<a
-							href={repo.html_url}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="activity-link"
-							data-sveltekit-reload
-						>
-							View Repository →
-						</a>
-					</Card>
-				{/each}
+							<a
+								href={repo.html_url}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="activity-link"
+								data-sveltekit-reload
+							>
+								View Repository →
+							</a>
+						</Card>
+					{/each}
+				{/if}
 			</div>
 		</div>
 
@@ -252,6 +281,10 @@
 		color: var(--color-primary);
 		text-decoration: none;
 		font-weight: 600;
+	}
+
+	:global(.chart-note-skeleton) {
+		margin: 0 auto;
 	}
 
 	.recent-activity {
