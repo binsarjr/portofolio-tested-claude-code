@@ -1,6 +1,27 @@
 <script lang="ts">
 	import Card from '$lib/components/ui/Card.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
+	import Skeleton from '$lib/components/ui/Skeleton.svelte';
+	import { navigating } from '$app/stores';
+
+	interface Props {
+		data: {
+			typingStats: {
+				wpm: number;
+				accuracy: number;
+				testsCompleted: number;
+				highestWpm: number;
+			};
+			isRealData: boolean;
+		};
+	}
+
+	let { data }: Props = $props();
+
+	// Derive loading state
+	const isLoading = $derived.by(() => {
+		return $navigating !== null;
+	});
 
 	const skillCategories = [
 		{
@@ -45,13 +66,6 @@
 		}
 	];
 
-	// Monkeytype stats (placeholder - can be updated with real API if available)
-	const typingStats = {
-		wpm: 95,
-		accuracy: 97,
-		testsCompleted: 500,
-		highestWpm: 120
-	};
 </script>
 
 <svelte:head>
@@ -92,30 +106,75 @@
 		<Card class="typing-stats-card">
 			<div class="typing-header">
 				<div class="typing-icon">⌨️</div>
-				<div>
-					<h2>Typing Performance</h2>
-					<p class="typing-subtitle">Measured on Monkeytype</p>
+				<div class="typing-title-wrapper">
+					<div>
+						<h2>Typing Performance</h2>
+						<p class="typing-subtitle">
+							{#if data.isRealData}
+								Real-time stats from Monkeytype
+							{:else}
+								Measured on Monkeytype
+							{/if}
+							{#if !data.isRealData}
+								<Badge variant="outline" size="sm" class="ml-2 inline-flex">Static</Badge>
+							{/if}
+						</p>
+					</div>
+					<a
+						href="https://monkeytype.com"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="monkeytype-link"
+						aria-label="Visit Monkeytype"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+							<polyline points="15 3 21 3 21 9"></polyline>
+							<line x1="10" y1="14" x2="21" y2="3"></line>
+						</svg>
+					</a>
 				</div>
 			</div>
 
-			<div class="stats-grid">
-				<div class="stat-item">
-					<div class="stat-value">{typingStats.wpm}</div>
-					<div class="stat-label">Average WPM</div>
+			{#if isLoading}
+				<div class="stats-grid">
+					{#each Array(4) as _, i (i)}
+						<div class="stat-item">
+							<Skeleton width="80px" height="2.5rem" />
+							<Skeleton width="100px" height="0.875rem" />
+						</div>
+					{/each}
 				</div>
-				<div class="stat-item">
-					<div class="stat-value">{typingStats.accuracy}%</div>
-					<div class="stat-label">Accuracy</div>
+			{:else}
+				<div class="stats-grid">
+					<div class="stat-item">
+						<div class="stat-value">{data.typingStats.wpm}</div>
+						<div class="stat-label">Average WPM</div>
+					</div>
+					<div class="stat-item">
+						<div class="stat-value">{data.typingStats.accuracy}%</div>
+						<div class="stat-label">Accuracy</div>
+					</div>
+					<div class="stat-item">
+						<div class="stat-value">{data.typingStats.highestWpm}</div>
+						<div class="stat-label">Highest WPM</div>
+					</div>
+					<div class="stat-item">
+						<div class="stat-value">{data.typingStats.testsCompleted}+</div>
+						<div class="stat-label">Tests Completed</div>
+					</div>
 				</div>
-				<div class="stat-item">
-					<div class="stat-value">{typingStats.highestWpm}</div>
-					<div class="stat-label">Highest WPM</div>
-				</div>
-				<div class="stat-item">
-					<div class="stat-value">{typingStats.testsCompleted}+</div>
-					<div class="stat-label">Tests Completed</div>
-				</div>
-			</div>
+			{/if}
 		</Card>
 
 		<!-- Skills Categories -->
@@ -201,6 +260,14 @@
 		font-size: 3rem;
 	}
 
+	.typing-title-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex: 1;
+		gap: 1rem;
+	}
+
 	.typing-header h2 {
 		font-size: 1.875rem;
 		margin: 0;
@@ -209,6 +276,36 @@
 	.typing-subtitle {
 		color: var(--color-muted-foreground);
 		margin: 0.25rem 0 0;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.monkeytype-link {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		border-radius: var(--radius-md);
+		background-color: var(--color-muted);
+		color: var(--color-muted-foreground);
+		transition: all 0.2s ease;
+		flex-shrink: 0;
+	}
+
+	.monkeytype-link:hover {
+		background-color: var(--color-primary);
+		color: var(--color-primary-foreground);
+		transform: translateY(-2px);
+	}
+
+	:global(.ml-2) {
+		margin-left: 0.5rem;
+	}
+
+	:global(.inline-flex) {
+		display: inline-flex;
 	}
 
 	.stats-grid {
