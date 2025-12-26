@@ -5,6 +5,7 @@
 	import StatCardSkeleton from '$lib/components/skeletons/StatCardSkeleton.svelte';
 	import ActivityCardSkeleton from '$lib/components/skeletons/ActivityCardSkeleton.svelte';
 	import Skeleton from '$lib/components/ui/Skeleton.svelte';
+	import StructuredData from '$lib/components/StructuredData.svelte';
 	import { navigating } from '$app/stores';
 
 	let { data }: { data: PageData } = $props();
@@ -12,6 +13,48 @@
 	// Show loading state during navigation
 	const isLoading = $derived($navigating !== null);
 	const showError = $derived(!isLoading && data.recentRepos.length === 0);
+
+	// Structured data for Activity page
+	const structuredData = [
+		{
+			'@type': 'WebPage',
+			'name': 'Activity - Binsar Dwi Jasuma',
+			'url': 'https://binsarjr.com/activity',
+			'description': 'Real-time GitHub contributions and open source activity. Track my coding journey and recent projects.',
+			'isPartOf': {
+				'@type': 'WebSite',
+				'name': 'Binsar Dwi Jasuma - Portfolio',
+				'url': 'https://binsarjr.com'
+			},
+			'breadcrumb': {
+				'@type': 'BreadcrumbList',
+				'itemListElement': [
+					{
+						'@type': 'ListItem',
+						'position': 1,
+						'name': 'Home',
+						'item': 'https://binsarjr.com/'
+					},
+					{
+						'@type': 'ListItem',
+						'position': 2,
+						'name': 'Activity',
+						'item': 'https://binsarjr.com/activity'
+					}
+				]
+			}
+		},
+		{
+			'@type': 'ProfilePage',
+			'name': 'GitHub Activity Profile',
+			'description': 'Real-time GitHub contributions and open source work by Binsar Dwi Jasuma',
+			'mainEntity': {
+				'@type': 'Person',
+				'name': 'Binsar Dwi Jasuma',
+				'sameAs': 'https://github.com/binsarjr'
+			}
+		}
+	];
 </script>
 
 <svelte:head>
@@ -38,6 +81,8 @@
 	<!-- Canonical URL -->
 	<link rel="canonical" href="https://binsarjr.com/activity" />
 </svelte:head>
+
+<StructuredData data={structuredData} />
 
 <section class="activity-page">
 	<div class="container">

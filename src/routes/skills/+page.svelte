@@ -2,6 +2,7 @@
 	import Card from '$lib/components/ui/Card.svelte';
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import Skeleton from '$lib/components/ui/Skeleton.svelte';
+	import StructuredData from '$lib/components/StructuredData.svelte';
 	import { navigating } from '$app/stores';
 
 	interface Props {
@@ -22,6 +23,64 @@
 	const isLoading = $derived.by(() => {
 		return $navigating !== null;
 	});
+
+	// Structured data for Skills page
+	const structuredData = [
+		{
+			'@type': 'WebPage',
+			'name': 'Skills - Binsar Dwi Jasuma',
+			'url': 'https://binsarjr.com/skills',
+			'description': 'Technical skills and expertise of Binsar Dwi Jasuma - programming languages, frameworks, tools, and typing performance.',
+			'isPartOf': {
+				'@type': 'WebSite',
+				'name': 'Binsar Dwi Jasuma - Portfolio',
+				'url': 'https://binsarjr.com'
+			},
+			'breadcrumb': {
+				'@type': 'BreadcrumbList',
+				'itemListElement': [
+					{
+						'@type': 'ListItem',
+						'position': 1,
+						'name': 'Home',
+						'item': 'https://binsarjr.com/'
+					},
+					{
+						'@type': 'ListItem',
+						'position': 2,
+						'name': 'Skills',
+						'item': 'https://binsarjr.com/skills'
+					}
+				]
+			}
+		},
+		{
+			'@type': 'Person',
+			'name': 'Binsar Dwi Jasuma',
+			'knowsAbout': [
+				'TypeScript',
+				'JavaScript',
+				'Python',
+				'Go',
+				'PHP',
+				'Svelte',
+				'SvelteKit',
+				'React',
+				'Vue.js',
+				'Node.js',
+				'Express',
+				'Git',
+				'Docker',
+				'PostgreSQL',
+				'MongoDB',
+				'Redis',
+				'Web Scraping',
+				'Data Extraction',
+				'API Development',
+				'Database Design'
+			]
+		}
+	];
 
 	const skillCategories = [
 		{
@@ -92,6 +151,8 @@
 	<!-- Canonical URL -->
 	<link rel="canonical" href="https://binsarjr.com/skills" />
 </svelte:head>
+
+<StructuredData data={structuredData} />
 
 <section class="skills-page">
 	<div class="container">

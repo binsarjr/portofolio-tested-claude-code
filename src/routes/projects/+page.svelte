@@ -4,6 +4,7 @@
 	import Badge from '$lib/components/ui/Badge.svelte';
 	import { getLanguageColor } from '$lib/utils/languageColors';
 	import ProjectCardSkeleton from '$lib/components/skeletons/ProjectCardSkeleton.svelte';
+	import StructuredData from '$lib/components/StructuredData.svelte';
 	import { navigating } from '$app/stores';
 
 	let { data }: { data: PageData } = $props();
@@ -11,6 +12,47 @@
 	// Show loading state during navigation or if no data yet
 	const isLoading = $derived($navigating !== null || data.repositories.length === 0);
 	const showError = $derived(!isLoading && data.repositories.length === 0);
+
+	// Structured data for Projects page
+	const structuredData = [
+		{
+			'@type': 'WebPage',
+			'name': 'Projects - Binsar Dwi Jasuma',
+			'url': 'https://binsarjr.com/projects',
+			'description': 'Explore all projects by Binsar Dwi Jasuma - open source contributions, libraries, and tools.',
+			'isPartOf': {
+				'@type': 'WebSite',
+				'name': 'Binsar Dwi Jasuma - Portfolio',
+				'url': 'https://binsarjr.com'
+			},
+			'breadcrumb': {
+				'@type': 'BreadcrumbList',
+				'itemListElement': [
+					{
+						'@type': 'ListItem',
+						'position': 1,
+						'name': 'Home',
+						'item': 'https://binsarjr.com/'
+					},
+					{
+						'@type': 'ListItem',
+						'position': 2,
+						'name': 'Projects',
+						'item': 'https://binsarjr.com/projects'
+					}
+				]
+			}
+		},
+		{
+			'@type': 'CollectionPage',
+			'name': 'Software Projects Portfolio',
+			'description': 'A collection of open source projects, libraries, and tools created by Binsar Dwi Jasuma',
+			'author': {
+				'@type': 'Person',
+				'name': 'Binsar Dwi Jasuma'
+			}
+		}
+	];
 </script>
 
 <svelte:head>
@@ -37,6 +79,8 @@
 	<!-- Canonical URL -->
 	<link rel="canonical" href="https://binsarjr.com/projects" />
 </svelte:head>
+
+<StructuredData data={structuredData} />
 
 <section class="projects-page">
 	<div class="container">
