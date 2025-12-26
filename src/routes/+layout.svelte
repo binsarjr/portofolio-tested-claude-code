@@ -5,8 +5,12 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import AnimatedBackground from '$lib/components/AnimatedBackground.svelte';
 	import PageTransition from '$lib/components/PageTransition.svelte';
+	import { inject } from '@vercel/analytics';
 
 	let { children } = $props();
+
+	// Initialize Vercel Analytics
+	inject();
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
