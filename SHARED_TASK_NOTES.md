@@ -7,10 +7,66 @@
 ✅ **Phase 3 Iteration 1 - UX Polish & Accessibility COMPLETE**
 ✅ **Phase 3 Iteration 2 - Navigation & Accessibility Polish COMPLETE**
 ✅ **Phase 4 Iteration 1 - Multi-Page Structure & Real-time Integration COMPLETE**
+✅ **Phase 4 Iteration 2 - Loading States & Page Transitions COMPLETE**
 
-## What Was Just Completed - Phase 4 Iteration 1: Multi-Page & Real-time Features
+## What Was Just Completed - Phase 4 Iteration 2: Loading States & Page Transitions
 
-Major improvements to portfolio structure and functionality:
+Enhanced user experience with loading states and smooth page transitions:
+
+### Loading Skeleton Components ✅
+
+Created reusable skeleton loading components in `src/lib/components/`:
+
+1. **Skeleton.svelte** - Base skeleton component
+   - Configurable width, height, variant (text, circular, rectangular)
+   - Animated shimmer effect using CSS gradients
+   - Accessibility: respects `prefers-reduced-motion`
+   - Uses `$derived.by` for proper Svelte 5 runes
+   - Supports optional children via Snippet
+
+2. **ProjectCardSkeleton.svelte** - Project card placeholder
+   - Matches project card layout structure
+   - Shows skeleton for title, description, stats, topics, footer
+   - Properly styled with gap spacing
+
+3. **ActivityCardSkeleton.svelte** - Activity card placeholder
+   - Mirrors activity card structure
+   - Header with title and badge placeholders
+   - Stats and description skeletons
+
+4. **StatCardSkeleton.svelte** - Stat card placeholder
+   - Circular icon placeholder
+   - Value and label skeletons
+   - Matches stat card flex layout
+
+### Enhanced Projects Page ✅
+
+Updated `src/routes/projects/+page.svelte`:
+- Integrated loading skeletons (6 cards while loading)
+- Uses `$navigating` store to detect navigation state
+- Error state UI with retry button
+- Dynamic subtitle showing loading/error/success states
+- Comprehensive error handling with user-friendly messages
+- Proper TypeScript typing with PageData
+
+### Enhanced Activity Page ✅
+
+Updated `src/routes/activity/+page.svelte`:
+- Loading skeletons for stat cards (4 cards)
+- Contribution chart skeleton
+- Recent repositories skeletons (6 cards)
+- Uses `$navigating` store for real-time loading detection
+- Seamless transitions between loading and loaded states
+
+### Page Transition Animations ✅
+
+Created `src/lib/components/PageTransition.svelte`:
+- Smooth fade-out (150ms) and fly-in (300ms with 20px y-offset) transitions
+- Keyed by route pathname for proper animation triggers
+- Respects `prefers-reduced-motion` for accessibility
+- Integrated in `+layout.svelte` wrapping all page content
+
+### Previous Work - Phase 4 Iteration 1: Multi-Page & Real-time Features
 
 ### Multi-Page Hybrid Architecture ✅
 
@@ -112,42 +168,50 @@ src/
 ├── lib/
 │   ├── components/
 │   │   ├── ui/
-│   │   │   ├── Badge.svelte (✅ enhanced: outline variant, size prop)
+│   │   │   ├── Badge.svelte
 │   │   │   ├── Card.svelte
 │   │   │   ├── Button.svelte
 │   │   │   ├── Input.svelte
-│   │   │   └── Textarea.svelte
+│   │   │   ├── Textarea.svelte
+│   │   │   └── Skeleton.svelte (✅ new - Phase 4.2)
+│   │   ├── skeletons/
+│   │   │   ├── ProjectCardSkeleton.svelte (✅ new - Phase 4.2)
+│   │   │   ├── ActivityCardSkeleton.svelte (✅ new - Phase 4.2)
+│   │   │   └── StatCardSkeleton.svelte (✅ new - Phase 4.2)
 │   │   ├── sections/
 │   │   │   ├── Hero.svelte
 │   │   │   ├── About.svelte
 │   │   │   ├── Projects.svelte
 │   │   │   └── Contact.svelte
-│   │   ├── AnimatedBackground.svelte (✅ new)
-│   │   ├── Navigation.svelte (✅ updated)
+│   │   ├── AnimatedBackground.svelte
+│   │   ├── PageTransition.svelte (✅ new - Phase 4.2)
+│   │   ├── Navigation.svelte
 │   │   └── Footer.svelte
 │   └── utils/
-│       └── languageColors.ts (✅ new)
+│       └── languageColors.ts
 └── routes/
-    ├── +layout.svelte (✅ updated: added AnimatedBackground)
+    ├── +layout.svelte (✅ updated: added PageTransition)
     ├── +page.svelte (homepage)
     ├── layout.css
     ├── projects/
-    │   ├── +page.svelte (✅ new)
-    │   └── +page.server.ts (✅ new)
+    │   ├── +page.svelte (✅ updated: loading states, error handling)
+    │   └── +page.server.ts
     ├── skills/
-    │   └── +page.svelte (✅ new)
+    │   └── +page.svelte
     └── activity/
-        ├── +page.svelte (✅ new)
-        └── +page.server.ts (✅ new)
+        ├── +page.svelte (✅ updated: loading states)
+        └── +page.server.ts
 ```
 
 ## Validation Status
 - ✅ All TypeScript types correct
-- ✅ `bun run check` passes with 0 errors
-- ✅ Dev server running successfully
-- ✅ All Svelte components validated
-- ✅ Responsive design implemented
-- ✅ Accessibility features maintained
+- ✅ `bun run check` passes with 0 errors, 0 warnings
+- ✅ All Svelte components validated with svelte-autofixer
+- ✅ Proper use of Svelte 5 runes (`$derived.by`, `$props`, `$navigating`)
+- ✅ Loading states working correctly
+- ✅ Page transitions smooth and accessible
+- ✅ Responsive design maintained
+- ✅ Accessibility features preserved (prefers-reduced-motion)
 
 ## Next Iteration: Potential Improvements
 
@@ -194,13 +258,14 @@ src/
 1. GitHub API uses public rate limit (60/hour) - consider adding auth token
 2. Monkeytype stats are static placeholders - needs real API integration
 3. Contact form still uses simulated submission - needs backend
-4. No loading states for GitHub API data yet
-5. No error boundaries for failed API calls
+4. ~~No loading states for GitHub API data yet~~ ✅ COMPLETED
+5. ~~No error boundaries for failed API calls~~ ✅ COMPLETED (Projects page has error UI)
 6. Missing 404 page
 7. No analytics tracking yet
 8. No sitemap or robots.txt
 9. OG images need to be created
 10. Project filtering/search not implemented yet
+11. Activity page needs error handling UI (similar to Projects page)
 
 ## Technical Notes
 - Dev server: `bun run dev` → http://localhost:5173

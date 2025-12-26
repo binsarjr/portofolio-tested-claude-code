@@ -4,6 +4,7 @@
 	import Navigation from '$lib/components/Navigation.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import AnimatedBackground from '$lib/components/AnimatedBackground.svelte';
+	import PageTransition from '$lib/components/PageTransition.svelte';
 
 	let { children } = $props();
 </script>
@@ -19,7 +20,9 @@
 <div class="app-layout">
 	<Navigation />
 	<main id="main-content" class="main-content">
-		{@render children()}
+		<PageTransition>
+			{@render children()}
+		</PageTransition>
 	</main>
 	<Footer />
 </div>
