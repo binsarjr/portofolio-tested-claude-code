@@ -1,0 +1,366 @@
+<script lang="ts">
+	import Card from '$lib/components/ui/Card.svelte';
+	import Badge from '$lib/components/ui/Badge.svelte';
+
+	const skillCategories = [
+		{
+			category: 'Languages',
+			skills: [
+				{ name: 'TypeScript', level: 95, icon: '⚡' },
+				{ name: 'JavaScript', level: 95, icon: '⚡' },
+				{ name: 'Python', level: 90, icon: '🐍' },
+				{ name: 'Go', level: 75, icon: '🔷' },
+				{ name: 'PHP', level: 80, icon: '🐘' }
+			]
+		},
+		{
+			category: 'Frameworks & Libraries',
+			skills: [
+				{ name: 'Svelte / SvelteKit', level: 95, icon: '🔥' },
+				{ name: 'React', level: 85, icon: '⚛️' },
+				{ name: 'Vue.js', level: 80, icon: '💚' },
+				{ name: 'Node.js', level: 90, icon: '🟢' },
+				{ name: 'Express', level: 85, icon: '🚂' }
+			]
+		},
+		{
+			category: 'Tools & Technologies',
+			skills: [
+				{ name: 'Git', level: 90, icon: '📦' },
+				{ name: 'Docker', level: 75, icon: '🐳' },
+				{ name: 'PostgreSQL', level: 80, icon: '🐘' },
+				{ name: 'MongoDB', level: 75, icon: '🍃' },
+				{ name: 'Redis', level: 70, icon: '⚡' }
+			]
+		},
+		{
+			category: 'Specializations',
+			skills: [
+				{ name: 'Web Scraping', level: 95, icon: '🕷️' },
+				{ name: 'Data Extraction', level: 90, icon: '📊' },
+				{ name: 'API Development', level: 90, icon: '🔌' },
+				{ name: 'Performance Optimization', level: 85, icon: '⚡' },
+				{ name: 'Open Source', level: 90, icon: '🌟' }
+			]
+		}
+	];
+
+	// Monkeytype stats (placeholder - can be updated with real API if available)
+	const typingStats = {
+		wpm: 95,
+		accuracy: 97,
+		testsCompleted: 500,
+		highestWpm: 120
+	};
+</script>
+
+<svelte:head>
+	<title>Skills - Binsar Dwi Jasuma</title>
+	<meta
+		name="description"
+		content="Technical skills and expertise of Binsar Dwi Jasuma - programming languages, frameworks, and tools."
+	/>
+</svelte:head>
+
+<section class="skills-page">
+	<div class="container">
+		<div class="header">
+			<h1>Skills & Expertise</h1>
+			<p class="subtitle">
+				Continuously learning and improving. "KNTL - Keep Never Tired Learning"
+			</p>
+		</div>
+
+		<!-- Typing Stats Card -->
+		<Card class="typing-stats-card">
+			<div class="typing-header">
+				<div class="typing-icon">⌨️</div>
+				<div>
+					<h2>Typing Performance</h2>
+					<p class="typing-subtitle">Measured on Monkeytype</p>
+				</div>
+			</div>
+
+			<div class="stats-grid">
+				<div class="stat-item">
+					<div class="stat-value">{typingStats.wpm}</div>
+					<div class="stat-label">Average WPM</div>
+				</div>
+				<div class="stat-item">
+					<div class="stat-value">{typingStats.accuracy}%</div>
+					<div class="stat-label">Accuracy</div>
+				</div>
+				<div class="stat-item">
+					<div class="stat-value">{typingStats.highestWpm}</div>
+					<div class="stat-label">Highest WPM</div>
+				</div>
+				<div class="stat-item">
+					<div class="stat-value">{typingStats.testsCompleted}+</div>
+					<div class="stat-label">Tests Completed</div>
+				</div>
+			</div>
+		</Card>
+
+		<!-- Skills Categories -->
+		<div class="skills-categories">
+			{#each skillCategories as category (category.category)}
+				<div class="category-section">
+					<h2 class="category-title">{category.category}</h2>
+
+					<div class="skills-list">
+						{#each category.skills as skill (skill.name)}
+							<Card class="skill-card">
+								<div class="skill-header">
+									<span class="skill-icon">{skill.icon}</span>
+									<span class="skill-name">{skill.name}</span>
+								</div>
+
+								<div class="skill-bar-container">
+									<div class="skill-bar" style="width: {skill.level}%"></div>
+								</div>
+
+								<div class="skill-level">{skill.level}%</div>
+							</Card>
+						{/each}
+					</div>
+				</div>
+			{/each}
+		</div>
+
+		<!-- Call to Action -->
+		<div class="cta-section">
+			<h2>Want to work together?</h2>
+			<p>I'm always interested in hearing about new projects and opportunities.</p>
+			<a href="/#contact" class="cta-button">Get in Touch</a>
+		</div>
+	</div>
+</section>
+
+<style>
+	.skills-page {
+		min-height: 100vh;
+		padding: 6rem 1.5rem 4rem;
+		background-color: var(--color-background);
+	}
+
+	.container {
+		max-width: 1280px;
+		margin: 0 auto;
+	}
+
+	.header {
+		margin-bottom: 3rem;
+		text-align: center;
+	}
+
+	.header h1 {
+		font-size: 3rem;
+		margin-bottom: 1rem;
+		background: linear-gradient(to right, var(--color-foreground), var(--color-muted-foreground));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.subtitle {
+		font-size: 1.25rem;
+		color: var(--color-muted-foreground);
+		font-style: italic;
+	}
+
+	:global(.typing-stats-card) {
+		margin-bottom: 3rem;
+		background: linear-gradient(135deg, var(--color-card) 0%, #1a1a2e 100%);
+	}
+
+	.typing-header {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin-bottom: 2rem;
+	}
+
+	.typing-icon {
+		font-size: 3rem;
+	}
+
+	.typing-header h2 {
+		font-size: 1.875rem;
+		margin: 0;
+	}
+
+	.typing-subtitle {
+		color: var(--color-muted-foreground);
+		margin: 0.25rem 0 0;
+	}
+
+	.stats-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+		gap: 2rem;
+	}
+
+	.stat-item {
+		text-align: center;
+	}
+
+	.stat-value {
+		font-size: 2.5rem;
+		font-weight: 800;
+		color: var(--color-primary);
+		line-height: 1;
+		margin-bottom: 0.5rem;
+	}
+
+	.stat-label {
+		font-size: 0.875rem;
+		color: var(--color-muted-foreground);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.skills-categories {
+		display: flex;
+		flex-direction: column;
+		gap: 3rem;
+		margin-bottom: 4rem;
+	}
+
+	.category-section {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.category-title {
+		font-size: 1.875rem;
+		font-weight: 700;
+		color: var(--color-foreground);
+	}
+
+	.skills-list {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		gap: 1rem;
+	}
+
+	:global(.skill-card) {
+		padding: 1.25rem;
+		transition: transform 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	:global(.skill-card:hover) {
+		transform: translateY(-2px);
+	}
+
+	.skill-header {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 1rem;
+	}
+
+	.skill-icon {
+		font-size: 1.5rem;
+	}
+
+	.skill-name {
+		font-size: 1.125rem;
+		font-weight: 600;
+		color: var(--color-foreground);
+	}
+
+	.skill-bar-container {
+		width: 100%;
+		height: 8px;
+		background-color: var(--color-muted);
+		border-radius: 999px;
+		overflow: hidden;
+		margin-bottom: 0.5rem;
+	}
+
+	.skill-bar {
+		height: 100%;
+		background: linear-gradient(to right, var(--color-primary), var(--color-accent));
+		border-radius: 999px;
+		transition: width 1s ease;
+	}
+
+	.skill-level {
+		text-align: right;
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--color-muted-foreground);
+	}
+
+	.cta-section {
+		text-align: center;
+		padding: 3rem 2rem;
+		background: linear-gradient(135deg, var(--color-card) 0%, #1a1a2e 100%);
+		border-radius: var(--radius-xl);
+		border: 1px solid var(--color-border);
+	}
+
+	.cta-section h2 {
+		font-size: 2rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.cta-section p {
+		font-size: 1.125rem;
+		color: var(--color-muted-foreground);
+		margin-bottom: 2rem;
+	}
+
+	.cta-button {
+		display: inline-block;
+		padding: 0.875rem 2rem;
+		background-color: var(--color-primary);
+		color: var(--color-primary-foreground);
+		font-weight: 600;
+		border-radius: var(--radius-lg);
+		text-decoration: none;
+		transition: all 0.2s ease;
+	}
+
+	.cta-button:hover {
+		background-color: var(--color-accent);
+		transform: translateY(-2px);
+		box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+	}
+
+	@media (max-width: 768px) {
+		.skills-page {
+			padding: 5rem 1rem 3rem;
+		}
+
+		.header h1 {
+			font-size: 2rem;
+		}
+
+		.subtitle {
+			font-size: 1rem;
+		}
+
+		.stats-grid {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1.5rem;
+		}
+
+		.stat-value {
+			font-size: 2rem;
+		}
+
+		.skills-list {
+			grid-template-columns: 1fr;
+		}
+
+		.cta-section {
+			padding: 2rem 1.5rem;
+		}
+
+		.cta-section h2 {
+			font-size: 1.5rem;
+		}
+	}
+</style>
