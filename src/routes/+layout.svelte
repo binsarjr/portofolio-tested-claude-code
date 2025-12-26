@@ -3,6 +3,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import Navigation from '$lib/components/Navigation.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import AnimatedBackground from '$lib/components/AnimatedBackground.svelte';
 
 	let { children } = $props();
 </script>
@@ -12,6 +13,8 @@
 <a href="#main-content" class="skip-to-content">
 	Skip to main content
 </a>
+
+<AnimatedBackground />
 
 <div class="app-layout">
 	<Navigation />

@@ -2,10 +2,11 @@
 	interface Props {
 		children?: any;
 		class?: string;
-		variant?: 'default' | 'primary' | 'secondary';
+		variant?: 'default' | 'primary' | 'secondary' | 'outline';
+		size?: 'sm' | 'md';
 	}
 
-	let { children, class: className = '', variant = 'default' }: Props = $props();
+	let { children, class: className = '', variant = 'default', size = 'md' }: Props = $props();
 </script>
 
 <span
@@ -13,6 +14,9 @@
 	class:badge-default={variant === 'default'}
 	class:badge-primary={variant === 'primary'}
 	class:badge-secondary={variant === 'secondary'}
+	class:badge-outline={variant === 'outline'}
+	class:badge-sm={size === 'sm'}
+	class:badge-md={size === 'md'}
 >
 	{@render children?.()}
 </span>
@@ -43,5 +47,21 @@
 		background-color: var(--color-secondary);
 		color: var(--color-secondary-foreground);
 		border: 1px solid var(--color-border);
+	}
+
+	.badge-outline {
+		background-color: transparent;
+		color: var(--color-muted-foreground);
+		border: 1px solid var(--color-border);
+	}
+
+	.badge-sm {
+		padding: 0.125rem 0.5rem;
+		font-size: 0.625rem;
+	}
+
+	.badge-md {
+		padding: 0.25rem 0.75rem;
+		font-size: 0.75rem;
 	}
 </style>
