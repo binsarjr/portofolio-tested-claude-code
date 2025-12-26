@@ -3,22 +3,73 @@
 	import Input from '../ui/Input.svelte';
 	import Textarea from '../ui/Textarea.svelte';
 	import Button from '../ui/Button.svelte';
+	import { enhance } from '$app/forms';
+	import type { SubmitFunction } from '@sveltejs/kit';
 
 	interface Props {
 		class?: string;
+		form?: {
+			success?: boolean;
+			error?: string;
+			message?: string;
+			devMode?: boolean;
+			field?: string;
+			values?: {
+				name?: string;
+				email?: string;
+				subject?: string;
+				message?: string;
+			}
+		} | null;
 	}
 
-	let { class: className = '' }: Props = $props();
-
-	let formData = $state({
-		name: '',
-		email: '',
-		subject: '',
-		message: ''
-	});
+	let { class: className = '', form: actionResult = null }: Props = $props();
 
 	let isSubmitting = $state(false);
-	let submitStatus = $state<'idle' | 'success' | 'error'>('idle');
+	let submitMessage = $state<{ type: 'success' | 'error'; text: string } | null>(null);
+
+	// Form field values (mutable state for binding)
+	let name = $state('');
+	let email = $state('');
+	let subject = $state('');
+	let message = $state('');
+
+	// Restore form values from server response if submission failed
+	$effect(() => {
+		if (actionResult?.values) {
+			name = actionResult.values.name || '';
+			email = actionResult.values.email || '';
+			subject = actionResult.values.subject || '';
+			message = actionResult.values.message || '';
+		}
+	});
+
+	// Show error/success message from server
+	$effect(() => {
+		if (actionResult?.success) {
+			submitMessage = {
+				type: 'success',
+				text: actionResult.message || "Message sent successfully! I'll get back to you soon."
+			};
+			// Clear form on success
+			name = '';
+			email = '';
+			subject = '';
+			message = '';
+		} else if (actionResult?.error) {
+			submitMessage = {
+				type: 'error',
+				text: actionResult.error
+			};
+		}
+
+		// Clear message after 7 seconds
+		if (submitMessage) {
+			setTimeout(() => {
+				submitMessage = null;
+			}, 7000);
+		}
+	});
 
 	const socialLinks = [
 		{
@@ -52,32 +103,15 @@
 		return icons[name as keyof typeof icons] || '';
 	}
 
-	async function handleSubmit(e: Event) {
-		e.preventDefault();
+	const handleFormSubmit: SubmitFunction = () => {
 		isSubmitting = true;
-		submitStatus = 'idle';
+		submitMessage = null;
 
-		try {
-			// Simulate form submission - replace with actual API call
-			await new Promise((resolve) => setTimeout(resolve, 1500));
-
-			// TODO: Implement actual form submission
-			// Example: await fetch('/api/contact', { method: 'POST', body: JSON.stringify(formData) })
-
-			submitStatus = 'success';
-			formData = { name: '', email: '', subject: '', message: '' };
-		} catch (error) {
-			submitStatus = 'error';
-			console.error('Form submission error:', error);
-		} finally {
+		return async ({ update }) => {
+			await update();
 			isSubmitting = false;
-
-			// Reset status after 5 seconds
-			setTimeout(() => {
-				submitStatus = 'idle';
-			}, 5000);
-		}
-	}
+		};
+	};
 </script>
 
 <section id="contact" class="contact {className}">
@@ -91,12 +125,13 @@
 		<div class="contact-grid">
 			<div class="contact-form-wrapper">
 				<Card class="contact-form-card">
-					<form onsubmit={handleSubmit} class="contact-form">
+					<form method="POST" action="?/contact" use:enhance={handleFormSubmit} class="contact-form">
 						<div class="form-group">
 							<label for="name" class="form-label">Name</label>
 							<Input
 								id="name"
-								bind:value={formData.name}
+								name="name"
+								bind:value={name}
 								placeholder="Your name"
 								required
 								disabled={isSubmitting}
@@ -107,8 +142,9 @@
 							<label for="email" class="form-label">Email</label>
 							<Input
 								id="email"
+								name="email"
 								type="email"
-								bind:value={formData.email}
+								bind:value={email}
 								placeholder="your.email@example.com"
 								required
 								disabled={isSubmitting}
@@ -119,7 +155,8 @@
 							<label for="subject" class="form-label">Subject</label>
 							<Input
 								id="subject"
-								bind:value={formData.subject}
+								name="subject"
+								bind:value={subject}
 								placeholder="What's this about?"
 								required
 								disabled={isSubmitting}
@@ -130,7 +167,8 @@
 							<label for="message" class="form-label">Message</label>
 							<Textarea
 								id="message"
-								bind:value={formData.message}
+								name="message"
+								bind:value={message}
 								placeholder="Your message..."
 								rows={6}
 								required
@@ -138,15 +176,29 @@
 							/>
 						</div>
 
-						{#if submitStatus === 'success'}
-							<div class="form-message success">
-								✓ Message sent successfully! I'll get back to you soon.
+						<!-- Honeypot field for spam protection (hidden from users) -->
+						<input
+							type="text"
+							name="website"
+							tabindex="-1"
+							autocomplete="off"
+							aria-hidden="true"
+							style="position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none;"
+						/>
+
+						{#if submitMessage}
+							<div class="form-message {submitMessage.type}">
+								{#if submitMessage.type === 'success'}
+									✓ {submitMessage.text}
+								{:else}
+									✗ {submitMessage.text}
+								{/if}
 							</div>
 						{/if}
 
-						{#if submitStatus === 'error'}
-							<div class="form-message error">
-								✗ Failed to send message. Please try again or contact me directly via email.
+						{#if actionResult?.devMode}
+							<div class="form-message warning">
+								⚠️ Development mode: Form submitted but email not sent. Configure RESEND_API_KEY for production.
 							</div>
 						{/if}
 
@@ -261,6 +313,12 @@
 		background: rgba(239, 68, 68, 0.1);
 		color: rgb(239, 68, 68);
 		border: 1px solid rgba(239, 68, 68, 0.2);
+	}
+
+	.form-message.warning {
+		background: rgba(251, 191, 36, 0.1);
+		color: rgb(251, 191, 36);
+		border: 1px solid rgba(251, 191, 36, 0.2);
 	}
 
 	.contact-form :global(.submit-button) {

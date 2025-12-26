@@ -4,6 +4,9 @@
 	import Projects from '$lib/components/sections/Projects.svelte';
 	import Contact from '$lib/components/sections/Contact.svelte';
 	import StructuredData from '$lib/components/StructuredData.svelte';
+	import type { ActionData } from './$types';
+
+	let { form }: { form: ActionData } = $props();
 
 	// Structured data for SEO - Person schema
 	const personSchema = {
@@ -106,4 +109,4 @@
 <Hero />
 <About />
 <Projects />
-<Contact />
+<Contact {form} />
